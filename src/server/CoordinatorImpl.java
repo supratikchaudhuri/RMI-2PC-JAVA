@@ -24,6 +24,21 @@ public class CoordinatorImpl implements Coordinator{
     Logger.printMsg("Coordinator started...");
   }
 
+  public static void main(String[] args) {
+    try {
+      if (args.length != 2) {
+        throw new IllegalArgumentException("Please Enter a valid host and port number.");
+      }
+
+      String host = args[0];
+      int port = Integer.parseInt(args[1]);
+
+      Coordinator coordinator = new CoordinatorImpl(host, port);
+    } catch (IllegalArgumentException | RemoteException e) {
+      errorLog(e.getMessage());
+    }
+  }
+
   @Override
   public void addParticipant(MapMethods participant) throws RemoteException {
     participants.add(participant);
@@ -32,23 +47,24 @@ public class CoordinatorImpl implements Coordinator{
 
   @Override
   public boolean broadcastPrepare() throws RemoteException, InterruptedException {
-    boolean shouldProceed = this.broadcast("prepare");
-    if (!shouldProceed) {
-      Logger.errorLog("Request aborted. 1 or more participants failed to prepare.");
-      return false;
-    }
-    return this.broadcastCommit();
+      boolean ready = this.broadcast("prepare");
+      if (!ready) {
+        Logger.errorLog("Request aborted. 1 or more participants failed to prepare.");
+        return false;
+      }
+      return this.broadcastCommit();
   }
 
   @Override
   public boolean broadcastCommit() throws RemoteException, InterruptedException {
-    boolean shouldProceed = this.broadcast("commit");
-    if (!shouldProceed) {
-      Logger.errorLog("Aborting request. Please try again...");
-      return false;
-    }
-    return true;
+      boolean ready = this.broadcast("commit");
+      if (!ready) {
+        Logger.errorLog("Aborting request. Please try again...");
+        return false;
+      }
+      return true;
   }
+
 
   private boolean broadcast(String txn) throws InterruptedException {
     List<Thread> threads = new ArrayList<>();
@@ -67,7 +83,7 @@ public class CoordinatorImpl implements Coordinator{
               break;
           }
         } catch (RemoteException e) {
-          throw new RuntimeException(e);
+          results.add(false);
         }
       });
       threads.add(thread);
@@ -78,14 +94,14 @@ public class CoordinatorImpl implements Coordinator{
       thread.join();
     }
 
-    boolean shouldProceed = true;
+    boolean ready = true;
     for (boolean result : results) {
       if (!result) {
-        shouldProceed = false;
+        ready = false;
         break;
       }
     }
-    return shouldProceed;
+    return ready;
   }
 
   @Override
@@ -127,21 +143,6 @@ public class CoordinatorImpl implements Coordinator{
 
     for (Thread thread : threads) {
       thread.join();
-    }
-  }
-
-  public static void main(String[] args) {
-    try {
-      if (args.length != 2) {
-        throw new IllegalArgumentException("Please Enter a valid host and port number.");
-      }
-
-      String host = args[0];
-      int port = Integer.parseInt(args[1]);
-
-      Coordinator coordinator = new CoordinatorImpl(host, port);
-    } catch (IllegalArgumentException | RemoteException e) {
-      errorLog(e.getMessage());
     }
   }
 }

@@ -49,14 +49,14 @@ public class Client {
 
       // populates key value stores with default values, and sets default servers as "server 0"
       // put inside try catch block
-//      addDefaultKeyValuePairs();
+      addDefaultKeyValuePairs();
 
       Logger.printMsg(getTimeStamp() + " Successfully connected to all servers.");
 
       boolean exit = false;
       while (!exit) {
         try {
-          exit = getOperationUI(exit);
+          exit = getOperationUI();
         } catch (IndexOutOfBoundsException e) {
           Logger.errorLog("Server does not exits. Try choosing a different server...");
         } catch (RuntimeException e) {
@@ -75,7 +75,7 @@ public class Client {
     servers.add(mm);
   }
 
-  private static boolean getOperationUI(boolean exit) throws IOException, InterruptedException {
+  private static boolean getOperationUI() throws IOException, InterruptedException {
     String requestTime = "";
     String request = "";
     String response = "";
@@ -115,8 +115,7 @@ public class Client {
       }
       case "5": {
         currentServer.handleRequest("save", null, null);
-        exit = true;
-        break;
+        return true;
       }
       default:
         Logger.printMsg("Please choose a valid operation.");
@@ -125,7 +124,7 @@ public class Client {
 
     requestLog(requestTime, request);
     responseLog(response);
-    return exit;
+    return false;
   }
 
   private static void printMenu() {

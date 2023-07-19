@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
@@ -10,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import utils.Logger;
 
 public class Participant {
+  Coordinator coordinator;
   public Participant(String host, int port, String coordinatorHost, int coordinatorPort) throws IOException, URISyntaxException, NotBoundException {
     Logger.printMsg("Starting server...");
 
@@ -23,7 +25,7 @@ public class Participant {
     // get the Coordinator from the registry and add MapMethods Object to its participant list
     System.setProperty("java.rmi.server.hostname", coordinatorHost);
     Registry coordinatorRegistry = LocateRegistry.getRegistry(coordinatorPort);
-    Coordinator coordinator = (Coordinator) coordinatorRegistry.lookup("Coordinator");
+    coordinator = (Coordinator) coordinatorRegistry.lookup("Coordinator");
     coordinator.addParticipant(mm);
     mm.setCoordinator(coordinator);
 

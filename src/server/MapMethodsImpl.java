@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -22,7 +21,6 @@ public class MapMethodsImpl implements MapMethods {
   static final Properties prop = new Properties();
   static OutputStream writer;
   static InputStream reader;
-  private final Scanner sc = new Scanner(System.in);
   private Coordinator coordinator;
 
   public MapMethodsImpl() throws IOException {
@@ -39,7 +37,7 @@ public class MapMethodsImpl implements MapMethods {
 
   @Override
   public String handleRequest(String operation, String key, String value) throws IOException, InterruptedException {
-    boolean shouldProceed;
+    boolean ready;
     String res = null;
     operation = operation.toUpperCase();
     switch (operation) {
@@ -48,8 +46,8 @@ public class MapMethodsImpl implements MapMethods {
         break;
 
       case "PUT":
-        shouldProceed = coordinator.broadcastPrepare();
-        if (shouldProceed) {
+        ready = coordinator.broadcastPrepare();
+        if (ready) {
           coordinator.broadcastPut(key, value);
           res = "Successfully inserted key value pair in map";
         } else {
@@ -58,8 +56,8 @@ public class MapMethodsImpl implements MapMethods {
         break;
 
       case "DELETE":
-        shouldProceed = coordinator.broadcastPrepare();
-        if (shouldProceed) {
+        ready = coordinator.broadcastPrepare();
+        if (ready) {
           coordinator.broadcastDelete(key);
           res = "Successfully deleted key value pair from map";
         } else {
@@ -88,14 +86,12 @@ public class MapMethodsImpl implements MapMethods {
 
   @Override
   public boolean askPrepare() throws RemoteException {
-    System.out.print("Are you prepared for new transaction? (y/n) : ");
-    return sc.nextLine().trim().equalsIgnoreCase("y");
+    return true;
   }
 
   @Override
   public boolean askCommit() throws RemoteException {
-    System.out.print("Are you ready to commit? (y/n) : ");
-    return sc.nextLine().trim().equalsIgnoreCase("y");
+    return true;
   }
 
   @Override
