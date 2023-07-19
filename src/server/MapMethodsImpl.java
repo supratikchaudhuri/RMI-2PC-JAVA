@@ -138,8 +138,4 @@ public class MapMethodsImpl implements MapMethods {
     return res;
   }
 
-  @Override
-  public void test() throws RemoteException {
-    System.out.println("hello");
-  }
 }

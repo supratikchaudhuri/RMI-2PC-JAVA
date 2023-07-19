@@ -10,8 +10,25 @@ import java.rmi.server.UnicastRemoteObject;
 
 import utils.Logger;
 
+/**
+ * Server Class that interacts with coordinator and servers requests to clients.
+ */
 public class Participant {
   Coordinator coordinator;
+
+  /**
+   * Constructor for participating class.
+   * It is responsible to communicate with the coordinator in order to follow the 2PC protocol
+   * It creates a participant and adds itself to the participant list of the coordinator.
+   *
+   * @param host            server's host
+   * @param port            server's port
+   * @param coordinatorHost coordinator's host
+   * @param coordinatorPort coordinator's port
+   * @throws IOException        exception
+   * @throws URISyntaxException exception
+   * @throws NotBoundException  exception
+   */
   public Participant(String host, int port, String coordinatorHost, int coordinatorPort) throws IOException, URISyntaxException, NotBoundException {
     Logger.printMsg("Starting server...");
 
@@ -32,6 +49,11 @@ public class Participant {
     Logger.printMsg("Server participant added to coordinator...");
   }
 
+  /**
+   * Entry point for the class.
+   *
+   * @param args accepts constructor arguments from command line
+   */
   public static void main(String[] args) {
     try {
       if (args.length != 4) {

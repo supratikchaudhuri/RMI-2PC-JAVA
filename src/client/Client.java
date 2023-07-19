@@ -27,7 +27,7 @@ public class Client {
 
 
   /**
-   * Driver method of this class
+   * Driver method of the Client class
    * @param args accepts command line arguments
    */
   public static void main(String[] args) {
