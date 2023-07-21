@@ -34,7 +34,7 @@ public interface MapMethods extends Remote {
    * @return prepared or not result
    * @throws RemoteException exception
    */
-  boolean askPrepare() throws RemoteException;
+  boolean askPrepare() throws RemoteException, InterruptedException;
 
   /**
    * Asks the coordinator is all participants can commit transaction or not
@@ -42,7 +42,7 @@ public interface MapMethods extends Remote {
    * @return can commit or not
    * @throws RemoteException exception
    */
-  boolean askCommit() throws RemoteException;
+  boolean askCommit() throws RemoteException, InterruptedException;
 
   /**
    * Get item from map

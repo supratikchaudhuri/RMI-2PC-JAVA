@@ -8,6 +8,7 @@ public class Logger {
   public static void printMsg(String msg) {
     System.out.println(msg);
   }
+
   public static String getTimeStamp() {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
     return "[Time: " + sdf.format(new Date()) + "] ";

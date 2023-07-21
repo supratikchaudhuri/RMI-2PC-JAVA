@@ -1,7 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
@@ -29,7 +28,8 @@ public class Participant {
    * @throws URISyntaxException exception
    * @throws NotBoundException  exception
    */
-  public Participant(String host, int port, String coordinatorHost, int coordinatorPort) throws IOException, URISyntaxException, NotBoundException {
+  public Participant(String host, int port, String coordinatorHost, int coordinatorPort)
+          throws IOException, URISyntaxException, NotBoundException {
 
     Logger.printMsg("Starting server...");
 

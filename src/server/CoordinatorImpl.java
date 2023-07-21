@@ -11,7 +11,7 @@ import utils.Logger;
 
 import static utils.Logger.errorLog;
 
-public class CoordinatorImpl implements Coordinator{
+public class CoordinatorImpl implements Coordinator {
   private final List<MapMethods> participants;
 
   public CoordinatorImpl(String host, int port) throws RemoteException {
@@ -49,22 +49,22 @@ public class CoordinatorImpl implements Coordinator{
 
   @Override
   public boolean broadcastPrepare() throws RemoteException, InterruptedException {
-      boolean ready = this.broadcast("prepare");
-      if (!ready) {
-        Logger.errorLog("Request aborted. 1 or more participants failed to prepare.");
-        return false;
-      }
-      return this.broadcastCommit();
+    boolean ready = this.broadcast("prepare");
+    if (!ready) {
+      Logger.errorLog("Request aborted. 1 or more participants failed to prepare.");
+      return false;
+    }
+    return this.broadcastCommit();
   }
 
   @Override
   public boolean broadcastCommit() throws RemoteException, InterruptedException {
-      boolean ready = this.broadcast("commit");
-      if (!ready) {
-        Logger.errorLog("Aborting request. Please try again...");
-        return false;
-      }
-      return true;
+    boolean ready = this.broadcast("commit");
+    if (!ready) {
+      Logger.errorLog("Aborting request. 1 or more participants failed to commit.");
+      return false;
+    }
+    return true;
   }
 
   private boolean broadcast(String txn) throws InterruptedException {
@@ -83,8 +83,8 @@ public class CoordinatorImpl implements Coordinator{
               results.add(participant.askCommit());
               break;
           }
-        } catch (RemoteException e) {
-          results.add(false);
+        } catch (RemoteException | InterruptedException e) {
+          throw new RuntimeException(e);
         }
       });
       threads.add(thread);
@@ -97,10 +97,8 @@ public class CoordinatorImpl implements Coordinator{
 
     boolean ready = true;
     for (boolean result : results) {
-      if (!result) {
-        ready = false;
-        break;
-      }
+      ready = ready && result;
+      if (!ready) break;
     }
     return ready;
   }

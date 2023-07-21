@@ -24,8 +24,14 @@ public class MapMethodsImpl implements MapMethods {
   private Coordinator coordinator;
   private final String host;
   private final int port;
+  private State state;
+
+  enum State {IDLE, BUSY}
+
+  ;
 
   public MapMethodsImpl(String host, int port) throws IOException {
+    this.state = State.IDLE;
     this.host = host;
     this.port = port;
     reader = new FileInputStream("map.properties");
@@ -40,7 +46,8 @@ public class MapMethodsImpl implements MapMethods {
   }
 
   @Override
-  public String handleRequest(String operation, String key, String value) throws IOException, InterruptedException {
+  public String handleRequest(String operation, String key, String value)
+          throws IOException, InterruptedException {
     boolean ready;
     String res = null;
     operation = operation.toUpperCase();
@@ -90,11 +97,17 @@ public class MapMethodsImpl implements MapMethods {
 
   @Override
   public boolean askPrepare() throws RemoteException {
+    if (this.state == State.BUSY)
+      return false;
+    this.state = State.BUSY;
     return true;
   }
 
   @Override
   public boolean askCommit() throws RemoteException {
+    if (this.state != State.BUSY)
+      return false;
+    this.state = State.IDLE;
     return true;
   }
 
@@ -105,10 +118,10 @@ public class MapMethodsImpl implements MapMethods {
     String value = prop.getProperty(key);
     rwlock.readLock().unlock();
 
-    String res = (value == null  || value.equals("~null~") ?
-            "No value found for key \"" + key : "Key: \"" + key + "\" ,Value: \"" + value);
+    String res = (value == null || value.equals("~null~") ?
+            "No value found for key \"" + key + "\"" : "Key: \"" + key + "\" ,Value: \"" + value + "\"");
     responseLog(res);
-    return value;
+    return res;
   }
 
   @Override
@@ -129,12 +142,11 @@ public class MapMethodsImpl implements MapMethods {
     requestLog("DELETE " + key);
     String res = "";
 
-    if(prop.containsKey(key)) {
+    if (prop.containsKey(key)) {
       put(key, "~null~");
       prop.remove(key);
       res = "Deleted key \"" + key + "\"";
-    }
-    else {
+    } else {
       res = "Key not found.";
     }
     responseLog(res);
