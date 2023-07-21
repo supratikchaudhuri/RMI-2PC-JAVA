@@ -29,6 +29,8 @@ public class CoordinatorImpl implements Coordinator{
       if (args.length != 2) {
         throw new IllegalArgumentException("Please Enter a valid host and port number.");
       }
+      System.setProperty("sun.rmi.transport.tcp.responseTimeout", "30000");
+      System.setProperty("sun.rmi.transport.tcp.connectionTimeout", "30000");
 
       String host = args[0];
       int port = Integer.parseInt(args[1]);
@@ -42,7 +44,7 @@ public class CoordinatorImpl implements Coordinator{
   @Override
   public void addParticipant(MapMethods participant) throws RemoteException {
     participants.add(participant);
-    Logger.printMsg("New participant added");
+    Logger.printMsg("New participant added " + participant.getName());
   }
 
   @Override
@@ -65,10 +67,9 @@ public class CoordinatorImpl implements Coordinator{
       return true;
   }
 
-
   private boolean broadcast(String txn) throws InterruptedException {
     List<Thread> threads = new ArrayList<>();
-    List<Boolean> results = new ArrayList<>(); // change this, dont need this
+    List<Boolean> results = new ArrayList<>();
 
     for (MapMethods participant : participants) {
       Thread thread = new Thread(() -> {
@@ -112,8 +113,8 @@ public class CoordinatorImpl implements Coordinator{
       Thread thread = new Thread(() -> {
         try {
           participant.put(key, value);
-        } catch (RemoteException e) {
-          throw new RuntimeException(e);
+        } catch (RemoteException | InterruptedException e) {
+          errorLog(e.getMessage());
         }
       });
       participantThreads.add(thread);
@@ -133,8 +134,8 @@ public class CoordinatorImpl implements Coordinator{
       Thread thread = new Thread(() -> {
         try {
           participant.delete(key);
-        } catch (RemoteException e) {
-          throw new RuntimeException(e);
+        } catch (RemoteException | InterruptedException e) {
+          errorLog(e.getMessage());
         }
       });
       threads.add(thread);

@@ -26,6 +26,8 @@ public class Logger {
   }
 
   public static void errorLog(String err) {
+    System.out.println("====================================================================================");
     System.out.println(getTimeStamp() + "ERROR: " + err);
+    System.out.println("====================================================================================");
   }
 }

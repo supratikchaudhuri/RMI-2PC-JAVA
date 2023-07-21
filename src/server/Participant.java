@@ -30,10 +30,11 @@ public class Participant {
    * @throws NotBoundException  exception
    */
   public Participant(String host, int port, String coordinatorHost, int coordinatorPort) throws IOException, URISyntaxException, NotBoundException {
+
     Logger.printMsg("Starting server...");
 
     System.setProperty("java.rmi.server.hostname", host);
-    MapMethods obj = new MapMethodsImpl();
+    MapMethods obj = new MapMethodsImpl(host, port);
     MapMethods mm = (MapMethods) UnicastRemoteObject.exportObject(obj, port);
 
     Registry registry = LocateRegistry.createRegistry(port);
@@ -59,6 +60,8 @@ public class Participant {
       if (args.length != 4) {
         throw new IllegalArgumentException("Exactly 4 arguments required, \"server_ip server_port coordinator_id coordinator_port\"");
       }
+      System.setProperty("sun.rmi.transport.tcp.responseTimeout", "30000");
+      System.setProperty("sun.rmi.transport.tcp.connectionTimeout", "30000");
 
       String host = args[0];
       int port = Integer.parseInt(args[1]);

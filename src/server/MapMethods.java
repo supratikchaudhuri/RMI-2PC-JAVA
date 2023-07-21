@@ -51,7 +51,7 @@ public interface MapMethods extends Remote {
    * @return value of the key
    * @throws RemoteException exception
    */
-  String getFromMap(String key) throws RemoteException;
+  String get(String key) throws RemoteException;
 
   /**
    * Puts an item in the map
@@ -61,7 +61,7 @@ public interface MapMethods extends Remote {
    * @return response of put operation
    * @throws RemoteException exception
    */
-  String put(String key, String value) throws RemoteException;
+  String put(String key, String value) throws RemoteException, InterruptedException;
 
   /**
    * Deletes item from map
@@ -70,6 +70,13 @@ public interface MapMethods extends Remote {
    * @return delete response
    * @throws RemoteException exception
    */
-  String delete(String key) throws RemoteException;
+  String delete(String key) throws RemoteException, InterruptedException;
+
+  /**
+   * Returns name of the server
+   * @return name
+   * @throws RemoteException exception
+   */
+  String getName() throws RemoteException;
 
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import server.MapMethods;
 import utils.Logger;
 
+import static utils.Logger.errorLog;
 import static utils.Logger.getTimeStamp;
 import static utils.Logger.requestLog;
 import static utils.Logger.responseLog;
@@ -24,7 +25,6 @@ public class Client {
   static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static List<MapMethods> servers = new ArrayList<>();
   static MapMethods currentServer;
-
 
   /**
    * Driver method of the Client class
@@ -83,47 +83,55 @@ public class Client {
     printMenu();
     String op = br.readLine().trim();
 
-    switch (op) {
-      case "1": {
-        String key = getKey();
-        request = "Get " + key;
-        requestTime = getTimeStamp();
-        response = currentServer.getFromMap(key);
+    try {
+      switch (op) {
+        case "1": {
+          String key = getKey();
+          request = "Get " + key;
+          requestTime = getTimeStamp();
+          response = currentServer.get(key);
 
-        break;
-      }
-      case "2": {
-        String key = getKey();
-        String value = getValue();
-        request = "PUT " + key + " | " + value;
-        requestTime = getTimeStamp();
-        response = currentServer.handleRequest("put", key, value);
+          break;
+        }
+        case "2": {
+          String key = getKey();
+          String value = getValue();
+          request = "PUT (" + key + ", " + value + ")";
+          requestTime = getTimeStamp();
+          response = currentServer.handleRequest("put", key, value);
 
-        break;
-      }
-      case "3": {
-        String key = getKey();
-        request = "Delete " + key;
-        requestTime = getTimeStamp();
-        response = currentServer.handleRequest("delete", key, null);
+          break;
+        }
+        case "3": {
+          String key = getKey();
+          request = "Delete " + key;
+          requestTime = getTimeStamp();
+          response = currentServer.handleRequest("delete", key, null);
 
-        break;
+          break;
+        }
+        case "4": {
+          currentServer = servers.get(getServerId());
+          request = "Change server to:" + currentServer.getName();
+          response = "Sever changed to: " + currentServer.getName();
+          break;
+        }
+        case "5": {
+          currentServer.handleRequest("save", null, null);
+          return true;
+        }
+        default:
+          Logger.printMsg("Please choose a valid operation.");
+          break;
       }
-      case "4": {
-        currentServer = servers.get(getServerId());
-        break;
-      }
-      case "5": {
-        currentServer.handleRequest("save", null, null);
-        return true;
-      }
-      default:
-        Logger.printMsg("Please choose a valid operation.");
-        break;
+
+      requestLog(requestTime, request);
+      responseLog(response);
+
+    } catch (RuntimeException e) {
+      errorLog(e.getMessage());
     }
 
-    requestLog(requestTime, request);
-    responseLog(response);
     return false;
   }
 
@@ -146,12 +154,12 @@ public class Client {
   private static int getServerId() throws IOException {
     Logger.printMsg("Choose one of the available servers ids...");
     for(int i = 0; i < servers.size(); i++) {
-      Logger.printMsg("Server id: " + (i+1));
+      Logger.printMsg("Server id: " + (i+1) + " => " + servers.get(i).getName());
     }
 
     System.out.print("Enter server id: ");
     int id = Integer.parseInt(br.readLine().trim());
-    System.out.println("Choosing: " + (id-1));
+    System.out.println("Choosing: " + servers.get(id-1).getName());
     return id-1;
   }
 

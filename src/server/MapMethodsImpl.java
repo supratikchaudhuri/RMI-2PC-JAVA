@@ -22,8 +22,12 @@ public class MapMethodsImpl implements MapMethods {
   static OutputStream writer;
   static InputStream reader;
   private Coordinator coordinator;
+  private final String host;
+  private final int port;
 
-  public MapMethodsImpl() throws IOException {
+  public MapMethodsImpl(String host, int port) throws IOException {
+    this.host = host;
+    this.port = port;
     reader = new FileInputStream("map.properties");
     prop.load(reader);
     writer = new FileOutputStream("map.properties", false);
@@ -42,7 +46,7 @@ public class MapMethodsImpl implements MapMethods {
     operation = operation.toUpperCase();
     switch (operation) {
       case "GET":
-        getFromMap(key);
+        get(key);
         break;
 
       case "PUT":
@@ -59,7 +63,7 @@ public class MapMethodsImpl implements MapMethods {
         ready = coordinator.broadcastPrepare();
         if (ready) {
           coordinator.broadcastDelete(key);
-          res = "Successfully deleted key value pair from map";
+          res = "Successfully deleted key value pair from map (if existed)";
         } else {
           throw new RuntimeException("Request aborted. 1 or more participants failed to prepare/commit.");
         }
@@ -95,16 +99,16 @@ public class MapMethodsImpl implements MapMethods {
   }
 
   @Override
-  public String getFromMap(String key) {
+  public String get(String key) {
     rwlock.readLock().lock();
     requestLog("GET " + key);
     String value = prop.getProperty(key);
     rwlock.readLock().unlock();
 
-    String res = (value == null  || value.equals("~null~")?
-            "No value found for key \"" + key + "\"" : "Key: \"" + key + "\" ,Value: \"" + value + "\"");
+    String res = (value == null  || value.equals("~null~") ?
+            "No value found for key \"" + key : "Key: \"" + key + "\" ,Value: \"" + value);
     responseLog(res);
-    return res;
+    return value;
   }
 
   @Override
@@ -136,6 +140,11 @@ public class MapMethodsImpl implements MapMethods {
     responseLog(res);
     rwlock.writeLock().unlock();
     return res;
+  }
+
+  @Override
+  public String getName() throws RemoteException {
+    return host + ":" + port;
   }
 
 }
