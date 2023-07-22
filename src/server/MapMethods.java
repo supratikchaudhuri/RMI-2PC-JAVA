@@ -23,8 +23,8 @@ public interface MapMethods extends Remote {
    * @param key     key to be inserted
    * @param value   value to be inserted
    * @return ready or not
-   * @throws IOException          exception
-   * @throws InterruptedException exception
+   * @throws IOException          exception thrown if there are problems accessing properties file
+   * @throws InterruptedException exception thrown in if remote method could not be called
    */
   String handleRequest(String command, String key, String value) throws IOException, InterruptedException;
 
@@ -32,7 +32,7 @@ public interface MapMethods extends Remote {
    * Asks the coordinator is all participants are prepared for transaction or not
    *
    * @return prepared or not result
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   boolean askPrepare() throws RemoteException, InterruptedException;
 
@@ -40,7 +40,7 @@ public interface MapMethods extends Remote {
    * Asks the coordinator is all participants can commit transaction or not
    *
    * @return can commit or not
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   boolean askCommit() throws RemoteException, InterruptedException;
 
@@ -49,7 +49,7 @@ public interface MapMethods extends Remote {
    *
    * @param key key to find from map
    * @return value of the key
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   String get(String key) throws RemoteException;
 
@@ -59,7 +59,7 @@ public interface MapMethods extends Remote {
    * @param key   key to put
    * @param value value to put
    * @return response of put operation
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   String put(String key, String value) throws RemoteException, InterruptedException;
 
@@ -68,14 +68,14 @@ public interface MapMethods extends Remote {
    *
    * @param key to be deleted
    * @return delete response
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   String delete(String key) throws RemoteException, InterruptedException;
 
   /**
    * Returns name of the server
    * @return name
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   String getName() throws RemoteException;
 

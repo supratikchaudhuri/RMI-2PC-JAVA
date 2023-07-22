@@ -58,7 +58,7 @@ public class Participant {
   public static void main(String[] args) {
     try {
       if (args.length != 4) {
-        throw new IllegalArgumentException("Exactly 4 arguments required, \"server_ip server_port coordinator_id coordinator_port\"");
+        throw new IllegalArgumentException("Exactly 4 arguments required, \"<server_ip> <server_port> <coordinator_ip> <coordinator_port>\"");
       }
       System.setProperty("sun.rmi.transport.tcp.responseTimeout", "30000");
       System.setProperty("sun.rmi.transport.tcp.connectionTimeout", "30000");
@@ -70,10 +70,8 @@ public class Participant {
 
       Participant participant = new Participant(host, port, coordinatorHost, coordinatorPort);
       Logger.printMsg("Participant ready at port " + port + " \n\n");
-    } catch (URISyntaxException | IOException | IllegalArgumentException e) {
+    } catch (URISyntaxException | IOException | IllegalArgumentException | NotBoundException e) {
       Logger.errorLog(e.getMessage());
-    } catch (NotBoundException e) {
-      throw new RuntimeException(e);
     }
   }
 }

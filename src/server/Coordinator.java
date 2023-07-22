@@ -12,7 +12,7 @@ public interface Coordinator extends Remote {
    * Adds participant for communication
    *
    * @param participant participating class
-   * @throws RemoteException exception
+   * @throws RemoteException exception thrown in if remote method could not be called
    */
   void addParticipant(MapMethods participant) throws RemoteException;
 
@@ -20,8 +20,8 @@ public interface Coordinator extends Remote {
    * Broadcasts a prepare message to all participants.
    *
    * @return ready or not response
-   * @throws RemoteException      exception
-   * @throws InterruptedException exception
+   * @throws RemoteException      exception thrown in if remote method could not be called
+   * @throws InterruptedException exception thrown in case of timeouts
    */
   boolean broadcastPrepare() throws RemoteException, InterruptedException;
 
@@ -29,8 +29,8 @@ public interface Coordinator extends Remote {
    * Broadcasts a commit message to all participants.
    *
    * @return ready to commit ot not response
-   * @throws RemoteException      exception
-   * @throws InterruptedException exception
+   * @throws RemoteException      exception thrown in if remote method could not be called
+   * @throws InterruptedException exception thrown in case of timeouts
    */
   boolean broadcastCommit() throws RemoteException, InterruptedException;
 
@@ -39,8 +39,8 @@ public interface Coordinator extends Remote {
    *
    * @param key   key to be inserted
    * @param value value associated to the key
-   * @throws RemoteException      exception
-   * @throws InterruptedException exception
+   * @throws RemoteException      exception thrown in if remote method could not be called
+   * @throws InterruptedException exception thrown in case of timeouts
    */
   void broadcastPut(String key, String value) throws RemoteException, InterruptedException;
 
@@ -48,8 +48,8 @@ public interface Coordinator extends Remote {
    * Broadcasts a delete message to all participants.
    *
    * @param key key to be deleted
-   * @throws RemoteException      exception
-   * @throws InterruptedException exception
+   * @throws RemoteException      exception thrown in if remote method could not be called
+   * @throws InterruptedException exception thrown in case of timeouts
    */
   void broadcastDelete(String key) throws RemoteException, InterruptedException;
 }

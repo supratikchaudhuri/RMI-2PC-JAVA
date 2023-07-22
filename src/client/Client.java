@@ -127,7 +127,7 @@ public class Client {
       responseLog(response);
 
     } catch (RuntimeException e) {
-      errorLog(e.getMessage());
+      errorLog("Invalid input....");
       return false;
     }
 

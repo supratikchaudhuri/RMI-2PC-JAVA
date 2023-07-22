@@ -1,4 +1,1 @@
 remove participant
-
-
-current coordinator state (other client cant put/delete when another client is performing a txn)
