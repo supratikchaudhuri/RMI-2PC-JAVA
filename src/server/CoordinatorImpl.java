@@ -10,6 +10,7 @@ import java.util.List;
 import utils.Logger;
 
 import static utils.Logger.errorLog;
+import static utils.Logger.printMsg;
 
 public class CoordinatorImpl implements Coordinator {
   private final List<MapMethods> participants;
@@ -84,7 +85,8 @@ public class CoordinatorImpl implements Coordinator {
               break;
           }
         } catch (RemoteException | InterruptedException e) {
-          throw new RuntimeException(e);
+          results.add(false);
+          throw new RuntimeException(e.getMessage());
         }
       });
       threads.add(thread);

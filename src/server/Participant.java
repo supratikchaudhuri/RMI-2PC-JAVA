@@ -33,6 +33,9 @@ public class Participant {
 
     Logger.printMsg("Starting server...");
 
+    Registry coordinatorRegistry = LocateRegistry.getRegistry(coordinatorHost, coordinatorPort);
+    coordinator = (Coordinator) coordinatorRegistry.lookup("Coordinator");
+
     System.setProperty("java.rmi.server.hostname", host);
     MapMethods obj = new MapMethodsImpl(host, port);
     MapMethods mm = (MapMethods) UnicastRemoteObject.exportObject(obj, port);
@@ -40,12 +43,8 @@ public class Participant {
     Registry registry = LocateRegistry.createRegistry(port);
     registry.rebind("MapMethods", mm);
 
-    // get the Coordinator from the registry and add MapMethods Object to its participant list
-    System.setProperty("java.rmi.server.hostname", coordinatorHost);
-    Registry coordinatorRegistry = LocateRegistry.getRegistry(coordinatorPort);
-    coordinator = (Coordinator) coordinatorRegistry.lookup("Coordinator");
-    coordinator.addParticipant(mm);
     mm.setCoordinator(coordinator);
+    coordinator.addParticipant(mm);
 
     Logger.printMsg("Server participant added to coordinator...");
   }

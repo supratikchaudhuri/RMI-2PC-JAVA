@@ -31,7 +31,7 @@ public class MapMethodsImpl implements MapMethods {
   ;
 
   public MapMethodsImpl(String host, int port) throws IOException {
-    this.state = State.IDLE;
+//    this.state = State.IDLE;
     this.host = host;
     this.port = port;
     reader = new FileInputStream("map.properties");

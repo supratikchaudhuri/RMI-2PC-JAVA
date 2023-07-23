@@ -127,7 +127,8 @@ public class Client {
       responseLog(response);
 
     } catch (RuntimeException e) {
-      errorLog("Invalid input....");
+      errorLog("1 or more server(s) may be unreachable..." + e.getMessage());
+      errorLog("Check if server id/ map request is valid. View ReadMe for the program...");
       return false;
     }
 

@@ -74,6 +74,7 @@ public interface MapMethods extends Remote {
 
   /**
    * Returns name of the server
+   *
    * @return name
    * @throws RemoteException exception thrown in if remote method could not be called
    */
