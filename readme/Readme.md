@@ -27,7 +27,7 @@ To set up a connectionless client server communication, please follow the steps 
 2. The **PUT** operation accepts 2 arguments, name a key and a value as `string`, and stores them in the map. In case the key already exits, it rewrites the value with the latest passed argument.
 3. The **DELETE** operation deletes a key-value pair from the map. If the key does not exist, the map remains unchanged.
 4. The **Change Server** operation selects a particular sever to interact with from a list of all servers user provided as cli arguments.
-5. The **Save & Exit** operation permanently stores changes in the external file. If client is closes without this option, changes made would not peprsist.
+5. The **Save & Exit** operation permanently stores changes in the external file. If client is closes without this option, changes made would not persist.
 
 ---
 
